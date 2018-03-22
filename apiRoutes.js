@@ -34,7 +34,6 @@ apiRoutes.get('/setup', function(req, res){
 
 //get one
 apiRoutes.get('/employees/:id', (req, res, next) => {
-    console.log(req.params.id);
     Employee.findOne({Employeeid : req.params.id}, (err, emp) => {
         if(err) res.send(err);
         res.json(emp);
@@ -42,8 +41,18 @@ apiRoutes.get('/employees/:id', (req, res, next) => {
 });
 
 //post i.e., create new data
-apiRoutes.post('/', (req, res, next) => {
-    
+apiRoutes.post('/employees', (req, res, next) => {
+    var newUser = new Employee({
+        Employeeid : req.query.Employeeid,
+        EmployeeName : req.query.EmployeeName,
+        EmployeeDOB : req.query.EmployeeDOB
+    });
+
+    newUser.save(function(err){
+        if(err) throw err;
+        console.log("User saved successfully");
+        res.json({ success : true });
+    });
 });
 
 apiRoutes.put('/employee/:id', (req, res, next) => {
