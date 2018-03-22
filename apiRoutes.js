@@ -1,24 +1,30 @@
 var apiRoutes = require('express').Router();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-
-var Employee = require('./models/Employee');
+var config = require('./config');
+var employee = require('./models/employee');
 
 //to get params from post req
 apiRoutes.use(bodyParser.urlencoded({extended : true}));
 apiRoutes.use(bodyParser.json());
 
+mongoose.connect(config.db_url);
+
 //get all users
-apiRoutes.get('/employees', (req, res,  next) => {
-    Employee.find({}, (err, emps) => {
-        if(err) throw err;
-        res.send(emps);
+apiRoutes.get('/employees', (req, res, next) => {
+    employee.find({}, (err, emps) => {
+        if(err) throw (err);
+        res.json(emps);
     });
 });
 
 //get one
 apiRoutes.get('/employees/:id', (req, res, next) => {
-    
+    console.log(req.params.id);
+    employee.findOne({Employeeid : req.params.id}, (err, emp) => {
+        if(err) res.send(err);
+        res.json(emp);
+    });
 });
 
 //post i.e., create new data
