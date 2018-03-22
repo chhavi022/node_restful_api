@@ -1,9 +1,8 @@
 var mongoose = require('mongoose');
 var Schema =  mongoose.Schema;
 
-const employee = new Schema({
+module.exports = mongoose.model('Employee', new Schema({
     Employeeid : Number,
-    EmployeeName : String
-});
-
-module.exports = mongoose.model('employee', employee);
+    EmployeeName : String,
+    EmployeeDOB : String
+}));

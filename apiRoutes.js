@@ -2,26 +2,40 @@ var apiRoutes = require('express').Router();
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var config = require('./config');
-var employee = require('./models/employee');
+var Employee = require('./models/employee');
 
 //to get params from post req
-apiRoutes.use(bodyParser.urlencoded({extended : true}));
+apiRoutes.use(bodyParser.urlencoded({extended : false}));
 apiRoutes.use(bodyParser.json());
 
 mongoose.connect(config.db_url);
 
 //get all users
 apiRoutes.get('/employees', (req, res, next) => {
-    employee.find({}, (err, emps) => {
+    Employee.find({}, (err, emps) => {
         if(err) throw (err);
         res.json(emps);
+    });
+});
+
+apiRoutes.get('/setup', function(req, res){
+    var newUser = new Employee({
+        Employeeid : 4,
+        EmployeeName : "Megha",
+        EmployeeDOB : "11/05/1995"
+    });
+
+    newUser.save(function(err){
+        if(err) throw err;
+        console.log("User saved successfully");
+        res.json({ success : true });
     });
 });
 
 //get one
 apiRoutes.get('/employees/:id', (req, res, next) => {
     console.log(req.params.id);
-    employee.findOne({Employeeid : req.params.id}, (err, emp) => {
+    Employee.findOne({Employeeid : req.params.id}, (err, emp) => {
         if(err) res.send(err);
         res.json(emp);
     });
