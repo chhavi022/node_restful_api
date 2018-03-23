@@ -43,9 +43,9 @@ apiRoutes.get('/employees/:id', (req, res, next) => {
 //post i.e., create new data
 apiRoutes.post('/employees', (req, res, next) => {
     var newUser = new Employee({
-        Employeeid : req.query.Employeeid,
-        EmployeeName : req.query.EmployeeName,
-        EmployeeDOB : req.query.EmployeeDOB
+        Employeeid : req.query.id,
+        EmployeeName : req.query.name,
+        EmployeeDOB : req.query.dob
     });
 
     newUser.save(function(err){
@@ -55,15 +55,27 @@ apiRoutes.post('/employees', (req, res, next) => {
     });
 });
 
-apiRoutes.put('/employee/:id', (req, res, next) => {
-    res.json({
-        success : true
+//update
+apiRoutes.put('/employees/:id', (req, res, next) => {
+    Employee.findOne({Employeeid : req.params.id}, (err, emp) => {
+        if(err) throw err;
+        emp.EmployeeName = req.query.name;
+        emp.EmployeeDOB = req.query.dob;
+        emp.save((err) =>{
+            if(err) throw err;
+            res.json({success : true});
+        });
     });
 });
 
-apiRoutes.delete('/employee/:id', (req, res, next) => {
-    res.json({
-        success : true
+//delete
+apiRoutes.delete('/employees/:id', (req, res, next) => {
+    Employee.findOneAndRemove({ Employeeid : req.params.id}, (err, deleted) => {
+        if(err) throw err;
+        res.json({
+            success : true,
+            Deleted : deleted
+        });
     });
 });
 
